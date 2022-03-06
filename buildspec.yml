@@ -4,14 +4,19 @@ phases:
   install:
     runtime-versions:
       docker: 18
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
   build:
     commands:
-      - echo Build started on `date`
+      - echo Build started on ${}
       - echo Building the Docker image...
       - docker build -t nginx .
-      - docker tag nginx:latest public.ecr.aws/d8j8k6x9/nginx:latest
+      - docker tag nginx:latest ${REPOSITORY_URI}:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push public.ecr.aws/d8j8k6x9/nginx:latest
+      - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+      - docker push ${REPOSITORY_URI}:latest
