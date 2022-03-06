@@ -9,12 +9,9 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t nginx:1.1.0 .
-      - docker tag nginx:1.1.0 public.ecr.aws/d8j8k6x9/kaonmir/nginx:1.1.0
+      - docker tag nginx:1.1.0 public.ecr.aws/d8j8k6x9/nginx:1.1.0
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push public.ecr.aws/d8j8k6x9/kaonmir/nginx:1.1.0
-cache:
-  paths:
-    - "/root/.m2/**/*"
+      - docker push public.ecr.aws/d8j8k6x9/nginx:1.1.0
