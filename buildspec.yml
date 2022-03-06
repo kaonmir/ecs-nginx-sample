@@ -8,9 +8,10 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
   build:
     commands:
-      - echo Build started on ${}
+      - echo Build started on ${REPOSITORY_URI}
       - echo Building the Docker image...
       - docker build -t nginx .
       - docker tag nginx:latest ${REPOSITORY_URI}:latest
@@ -18,5 +19,8 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+      # - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
       - docker push ${REPOSITORY_URI}:latest
+cache:
+  paths:
+    - "/root/.m2/**/*"
